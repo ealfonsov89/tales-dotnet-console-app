@@ -20,11 +20,8 @@ static List<string> ReadData()
     do
     {
         currentLine = Console.ReadLine();
-        if (!string.IsNullOrEmpty(currentLine))
-        {
-            data.Add(currentLine);
-        }
-    } while (string.IsNullOrEmpty(currentLine));
+        data.Add(currentLine);
+    } while (!string.IsNullOrEmpty(currentLine));
     return data;
 }
 
