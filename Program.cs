@@ -7,7 +7,7 @@ Console.WriteLine("Please enter data:");
 
 List<string> data = ReadData();
 
-List<int> dataToRemove = DataToRemove(data);
+int[] dataToRemove = DataToRemove(data);
 
 Console.WriteLine("Thank you for entering data");
 string dataToRemoveString = string.Join(",", dataToRemove);
@@ -15,40 +15,32 @@ Console.WriteLine($"The following elements will need to be removed: {dataToRemov
 
 static List<string> ReadData()
 {
-    List<string> data = new List<string>();
-    string? currentLine;
-    do
+    string datalength = Console.ReadLine();
+    List<string> data = new();
+    bool parseSuccess = int.TryParse(datalength, out int dataLength);
+    for (int i = 0; i < dataLength; i++)
     {
-        currentLine = Console.ReadLine();
+        string currentLine = Console.ReadLine();
         data.Add(currentLine);
-    } while (!string.IsNullOrEmpty(currentLine));
+    }
     return data;
 }
 
-static List<int> DataToRemove(List<string> data)
+static int[] DataToRemove(List<string> data)
 {
-    bool parseSuccess = int.TryParse(data[0], out int dataLength);
-
-    if (!parseSuccess)
-    {
-        Console.WriteLine("Invalid data length");
-        return null;
-    }
-
-
     List<Data> filteredData = new List<Data>();
     List<int> elementsToRemove = [];
 
-    for (int i = 1; i < dataLength; i++)
+    for (int i = 0; i < data.Count; i++)
     {
         string[] dataElementFragments = data[i].Split(",");
         Data dataItem = new(dataElementFragments);
-        filteredData.Add(dataItem);
-        if (!Data.IsValidData(dataItem) && filteredData.FirstOrDefault(filteredDataItem => filteredDataItem == filteredData[i]) != null)
+        if (!Data.IsValidData(dataItem) || filteredData.FirstOrDefault(filteredDataItem => filteredDataItem.Equals(dataItem)) != null)
         {
-            elementsToRemove.Add(i);
+            elementsToRemove.Add(dataItem.scanId);
         }
+        filteredData.Add(dataItem);
     }
 
-    return elementsToRemove;
+    return elementsToRemove.Order().ToArray();
 }

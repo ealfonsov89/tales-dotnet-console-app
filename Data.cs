@@ -20,8 +20,8 @@ public class Data
     public string FirstName { get; set; }
     public string DocumentNumber { get; set; }
     public string Nationality { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public DateTime DateOfExpiry { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    public DateTime? DateOfExpiry { get; set; }
 
     public Data(string[] dataElementFragments)
     {
@@ -32,8 +32,22 @@ public class Data
         FirstName = dataElementFragments[4];
         DocumentNumber = dataElementFragments[5];
         Nationality = dataElementFragments[6][..3];
-        DateOfBirth = DateTime.ParseExact(dataElementFragments[7], "yyMMdd", CultureInfo.InvariantCulture);
-        DateOfExpiry = DateTime.ParseExact(dataElementFragments[8], "yyMMdd", CultureInfo.InvariantCulture);
+        try
+        {
+            DateOfBirth = DateTime.ParseExact(dataElementFragments[7], "yyMMdd", CultureInfo.InvariantCulture);
+        }
+        catch (FormatException)
+        {
+            DateOfBirth = null;
+        }
+        try
+        {
+            DateOfExpiry = DateTime.ParseExact(dataElementFragments[8], "yyMMdd", CultureInfo.InvariantCulture);
+        }
+        catch (FormatException)
+        {
+            DateOfExpiry = null;
+        }
     }
 
     private void MapDocumentType(string[] dataElementFragments)
@@ -55,7 +69,7 @@ public class Data
     }
     public static bool IsValidData(Data data)
     {
-        return data.DateOfExpiry > DateTime.Now &&
+        return data.DateOfExpiry != null && data.DateOfBirth != null && data.DateOfExpiry > DateTime.Now &&
                 acceptedCountries.Contains(data.IssuingCountry) &&
                 acceptedCountries.Contains(data.Nationality);
     }
